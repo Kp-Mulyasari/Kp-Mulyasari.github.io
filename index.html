@@ -363,27 +363,27 @@
       <!-- ================= KAS ================= -->
       <section id="kas">
         <h2>Keadaan Kas</h2>
-        <p class="sec-lead">Saldo kas menumpuk dari bulan ke bulan. Ringkasan di bawah ini sesuai Rekapan Bulanan pada file iuran untuk bulan November 2026.</p>
+        <p class="sec-lead">Saldo kas menumpuk dari bulan ke bulan. Ringkasan di bawah ini dibaca langsung dari tab Rekapan Bulanan pada file iuran setiap kali halaman dibuka, jadi selalu mengikuti angka terbaru di file tersebut.</p>
         <div class="kas-grid">
           <div class="card">
-            <p class="k-label">Saldo Kas per Rekapan &mdash; November 2026</p>
-            <p class="k-big">Rp15.000</p>
-            <p class="k-sub">Menuju target dana cadangan sebesar Rp3.000.000:</p>
-            <div class="progress" role="img" aria-label="Saldo Rp15.000 dari target Rp3.000.000, tercapai 0,5 persen">
+            <p class="k-label">Saldo Kas Saat Ini &mdash; <span id="kasMonth">November 2026</span></p>
+            <p class="k-big" id="kasSaldo">Rp26.250</p>
+            <p class="k-sub">Menuju target dana cadangan sebesar <span id="kasTargetText">Rp3.000.000</span>:</p>
+            <div class="progress" id="kasProgress" role="img" aria-label="Saldo Rp26.250 dari target Rp3.000.000, tercapai 0,88 persen">
               <div id="progressFill"></div>
             </div>
-            <div class="progress-meta"><span>Rp15.000 terkumpul</span><span>0,5% dari target</span></div>
+            <div class="progress-meta"><span id="kasCollected">Rp26.250 terkumpul</span><span id="kasPercent">0,88% dari target</span></div>
           </div>
           <div class="card">
             <p class="k-label">Rincian Ketentuan Kas</p>
-            <div class="kv"><span>Iuran per KK per bulan</span><b>Rp5.000</b></div>
-            <div class="kv"><span>Biaya Pengurus</span><b>25% dari total iuran</b></div>
-            <div class="kv"><span>Perkiraan santunan per kejadian</span><b>&plusmn; Rp1.000.000</b></div>
-            <div class="kv"><span>Target dana cadangan</span><b>Rp3.000.000</b></div>
+            <div class="kv"><span>Iuran per KK per bulan</span><b id="kasIuran">Rp5.000</b></div>
+            <div class="kv"><span>Biaya Pengurus</span><b id="kasBiaya">25% dari total iuran</b></div>
+            <div class="kv"><span>Perkiraan santunan per kejadian</span><b id="kasSantunan">&plusmn; Rp1.000.000</b></div>
+            <div class="kv"><span>Target dana cadangan</span><b id="kasTarget">Rp3.000.000</b></div>
             <div class="kv"><span>Pengeluaran bulan tanpa kejadian &amp; keperluan lain</span><b>Rp0</b></div>
           </div>
         </div>
-        <p class="snapshot-note">Ringkasan di atas adalah potret keadaan kas per November 2026. Angka terbaru selalu ada di tab Rekapan Bulanan pada file iuran &mdash; buka lewat tombol &ldquo;Buka File Iuran&rdquo; di atas.</p>
+        <p class="snapshot-note" id="kasStatus">Angka di atas dibaca langsung dari tab Rekapan Bulanan pada file iuran setiap halaman ini dibuka.</p>
       </section>
 
       <!-- ================= HITUNG ================= -->
@@ -596,13 +596,81 @@
         var ADDRESS = "Kp. Mulyasari (Jalupang), RT 01 dan RT 02 / RW 05, Desa Pangulah Baru, Kecamatan Kotabaru, Kabupaten Karawang, Jawa Barat 41374";
         var SHEET_NOTE = "Sesuai Rekapan Bulanan, November 2026";
 
-        /* Progress kas: Rp15.000 dari target Rp3.000.000 */
+        /* Keadaan kas: angka dibaca langsung dari tab Rekapan Bulanan pada
+           file iuran lewat umpan data publik Google Sheets (gratis, tanpa
+           kunci). Nilai awal di bawah adalah potret terakhir yang tercatat
+           (November 2026) dan tetap ditampilkan bila file tidak terjangkau. */
+        var KAS = { saldo: 26250, target: 3000000, iuran: 5000, biaya: 0.25, santunan: 1000000, bulan: "November 2026" };
         var fill = document.getElementById("progressFill");
-        if (fill) {
-          requestAnimationFrame(function () {
-            setTimeout(function () { fill.style.width = "0.5%"; }, 150);
-          });
+        function rpFull(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
+        function pctText(x) { return x.toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "%"; }
+        function renderKas() {
+          var pct = KAS.target > 0 ? (KAS.saldo / KAS.target) * 100 : 0;
+          var saldoEl = document.getElementById("kasSaldo");
+          if (saldoEl) saldoEl.textContent = rpFull(KAS.saldo);
+          var monthEl = document.getElementById("kasMonth");
+          if (monthEl && KAS.bulan) monthEl.textContent = KAS.bulan;
+          var targetText = document.getElementById("kasTargetText");
+          if (targetText) targetText.textContent = rpFull(KAS.target);
+          var collected = document.getElementById("kasCollected");
+          if (collected) collected.textContent = rpFull(KAS.saldo) + " terkumpul";
+          var percent = document.getElementById("kasPercent");
+          if (percent) percent.textContent = pctText(pct) + " dari target";
+          var prog = document.getElementById("kasProgress");
+          if (prog) prog.setAttribute("aria-label", "Saldo " + rpFull(KAS.saldo) + " dari target " + rpFull(KAS.target) + ", tercapai " + pctText(pct));
+          var kvI = document.getElementById("kasIuran");
+          if (kvI) kvI.textContent = rpFull(KAS.iuran);
+          var kvB = document.getElementById("kasBiaya");
+          if (kvB) kvB.textContent = pctText(KAS.biaya * 100) + " dari total iuran";
+          var kvS = document.getElementById("kasSantunan");
+          if (kvS) kvS.textContent = "\u00B1 " + rpFull(KAS.santunan);
+          var kvT = document.getElementById("kasTarget");
+          if (kvT) kvT.textContent = rpFull(KAS.target);
+          if (fill) fill.style.width = Math.min(pct, 100) + "%";
         }
+        requestAnimationFrame(function () { setTimeout(renderKas, 150); });
+
+        (function loadKas() {
+          var statusEl = document.getElementById("kasStatus");
+          var url = "https://docs.google.com/spreadsheets/d/18tvUlsYDDKFqIQ8cimhBJ4qN0cmLTbvnyRjzbzwC1-U/gviz/tq?tqx=out:json&sheet=Rekapan%20Bulanan";
+          function fail() {
+            if (statusEl) statusEl.textContent = "Saat ini file iuran belum dapat dihubungi, jadi angka di atas adalah potret terakhir yang tercatat (" + KAS.bulan + "). Angka terbaru selalu ada di tab Rekapan Bulanan pada file iuran \u2014 buka lewat tombol \u201CBuka File Iuran\u201D di atas.";
+          }
+          if (!window.fetch) { fail(); return; }
+          var ctrl = ("AbortController" in window) ? new AbortController() : null;
+          var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 9000) : null;
+          fetch(url, ctrl ? { signal: ctrl.signal } : {})
+            .then(function (res) { if (!res.ok) throw new Error("http " + res.status); return res.text(); })
+            .then(function (text) {
+              if (timer) clearTimeout(timer);
+              var json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
+              var rows = (json.table && json.table.rows) || [];
+              function cell(r, i) { var c = r.c && r.c[i]; return c ? c.v : null; }
+              var found = false, inMonths = false, lastActive = null;
+              rows.forEach(function (r) {
+                var label = cell(r, 0);
+                if (typeof label !== "string") return;
+                var val = cell(r, 1);
+                if (label.indexOf("Saldo Kas Saat Ini") === 0 && typeof val === "number") { KAS.saldo = val; found = true; }
+                else if (label.indexOf("Dana Cadangan Target") === 0 && typeof val === "number") { KAS.target = val; }
+                else if (label.indexOf("Iuran per Keluarga") === 0 && typeof val === "number") { KAS.iuran = val; }
+                else if (label.indexOf("Biaya Pengurus") === 0 && typeof val === "number") { KAS.biaya = val; }
+                else if (label.indexOf("Perkiraan santunan") === 0 && typeof val === "number") { KAS.santunan = val; }
+                else if (label === "Bulan") { inMonths = true; }
+                else if (inMonths) {
+                  var total = cell(r, 2);
+                  if (typeof total === "number" && total > 0) lastActive = label;
+                }
+              });
+              if (!found) { fail(); return; }
+              if (lastActive) KAS.bulan = lastActive;
+              renderKas();
+              if (statusEl) {
+                statusEl.textContent = "Angka di atas adalah angka terbaru dari tab Rekapan Bulanan pada file iuran, dibaca langsung saat halaman ini dibuka (" + new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) + ").";
+              }
+            })
+            .catch(function () { if (timer) clearTimeout(timer); fail(); });
+        })();
 
         /* Kalkulator iuran sekaligus */
         var RATE = 5000;
