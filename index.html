@@ -658,8 +658,17 @@
                 else if (label.indexOf("Perkiraan santunan") === 0 && typeof val === "number") { KAS.santunan = val; }
                 else if (label === "Bulan") { inMonths = true; }
                 else if (inMonths) {
-                  var total = cell(r, 2);
-                  if (typeof total === "number" && total > 0) lastActive = label;
+                  /* Hanya baris bulan asli yang boleh jadi label: nama bulan
+                     Indonesia lengkap + tahun 4 digit (mis. "November 2026").
+                     Baris TOTAL, Catatan, dan catatan bernomor diabaikan,
+                     jadi label selalu bulan terakhir yang ada iurannya dan
+                     berpindah sendiri mengikuti data di Rekapan. */
+                  var monthLabel = label.trim();
+                  if (monthLabel === "TOTAL") { inMonths = false; }
+                  else if (/^(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember) \d{4}$/.test(monthLabel)) {
+                    var total = cell(r, 2);
+                    if (typeof total === "number" && total > 0) lastActive = monthLabel;
+                  }
                 }
               });
               if (!found) { fail(); return; }
