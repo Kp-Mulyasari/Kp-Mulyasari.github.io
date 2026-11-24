@@ -73,7 +73,6 @@
         background: #123f24;
         color: var(--hero-ink);
         padding: 34px 0 0;
-        overflow: hidden;
       }
       @media (prefers-color-scheme: dark) { .hero { background: #0e2e1a; } }
       .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 34px; align-items: center; }
@@ -332,6 +331,7 @@
         .hero-grid, .kas-grid, .calc, .org, .open-grid { grid-template-columns: 1fr; }
         .dana-grid { grid-template-columns: 1fr; }
         .hero { padding-top: 26px; }
+        .hero-cta .btn-gold { flex: 1 1 100%; justify-content: center; }
         .hero-img { border-radius: 14px; height: 230px; margin-bottom: 22px; }
         .toc .wrap { flex-wrap: wrap; overflow-x: visible; }
         .hero-stats .wrap { grid-template-columns: 1fr 1fr; }
@@ -373,7 +373,7 @@
                   <a href="#pengurus" role="menuitem">Struktur Pengurus</a>
                 </div>
               </div>
-              <a class="btn btn-ghost" href="#ketentuan">Lihat Ketentuan</a>
+              <a class="btn btn-ghost" href="#ketentuan">Ketentuan</a>
             </div>
           </div>
           <img class="hero-img" src="assets/suasana-mulyasari.webp" alt="Ilustrasi suasana Kp. Mulyasari: rumah warga, masjid, dan sawah pada sore hari" width="1920" height="1280" />
