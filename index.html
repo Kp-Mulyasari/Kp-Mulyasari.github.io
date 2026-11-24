@@ -147,6 +147,21 @@
         color: var(--muted); font-weight: 600; font-size: .92rem;
       }
       .toc a:hover, .toc a:focus-visible { background: var(--green-soft); color: var(--green); }
+      .toc a.toc-top { color: var(--green); }
+
+      /* ---------- Tombol balik ka luhur ---------- */
+      .to-top {
+        position: fixed; right: 16px; bottom: 16px; z-index: 60;
+        width: 52px; height: 52px; border: 0; border-radius: 50%;
+        background: var(--gold); color: #221a04; font-size: 1.5rem; font-weight: 800;
+        line-height: 1; cursor: pointer; font-family: inherit;
+        box-shadow: 0 8px 22px rgba(0,0,0,.35);
+        opacity: 0; visibility: hidden; transform: translateY(8px);
+        transition: opacity .25s ease, visibility .25s ease, transform .25s ease;
+      }
+      .to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+      .to-top:focus-visible { outline: 3px solid var(--green-2); outline-offset: 2px; }
+      @media (prefers-reduced-motion: reduce) { .to-top { transition: none; } }
 
       /* ---------- Sections ---------- */
       section { padding: 52px 0 8px; }
@@ -347,7 +362,7 @@
   <body>
 
     <!-- ================= HERO ================= -->
-    <header class="hero">
+    <header class="hero" id="atas">
       <div class="wrap">
         <div class="hero-grid">
           <div>
@@ -402,6 +417,7 @@
 
     <nav class="toc" aria-label="Isi halaman">
       <div class="wrap">
+        <a href="#atas" class="toc-top">&uarr; Luhur</a>
         <a href="#kas">Keadaan Kas</a>
         <a href="#buka-file">Cara Buka File</a>
         <a href="#ketentuan">Ketentuan</a>
@@ -907,7 +923,22 @@
             }
           });
         }
+        /* Tombol balik ka luhur: muncul sanggeus scroll ka handap */
+        var toTopBtn = document.getElementById("toTop");
+        if (toTopBtn) {
+          var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          function updateToTop() {
+            if (window.scrollY > 400) { toTopBtn.classList.add("show"); }
+            else { toTopBtn.classList.remove("show"); }
+          }
+          window.addEventListener("scroll", updateToTop, { passive: true });
+          updateToTop();
+          toTopBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+          });
+        }
       })();
     </script>
+    <button class="to-top" id="toTop" type="button" aria-label="Balik ka luhur">&uarr;</button>
   </body>
 </html>
