@@ -104,6 +104,18 @@
       .btn-gold:hover { background: #dcb04a; }
       .btn-ghost { border-color: rgba(255,255,255,.45); color: #fff; background: transparent; }
       .btn-ghost:hover { border-color: #fff; }
+      .menu-wrap { position: relative; display: inline-flex; }
+      .menu-drop {
+        display: none; position: absolute; top: calc(100% + 8px); left: 0; z-index: 40;
+        min-width: 240px; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 12px; box-shadow: 0 14px 34px rgba(0,0,0,.28); padding: 6px;
+      }
+      .menu-wrap.open .menu-drop { display: block; }
+      .menu-drop a {
+        display: flex; align-items: center; min-height: 44px; padding: 10px 14px;
+        border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: .95rem;
+      }
+      .menu-drop a:hover, .menu-drop a:focus-visible { background: var(--green-soft); color: var(--green); }
       .btn svg { width: 19px; height: 19px; flex: none; }
       .hero-img {
         border-radius: 16px;
@@ -349,6 +361,19 @@
                 Buka File Iuran
               </a>
               <a class="btn btn-ghost" href="#ketentuan">Lihat Ketentuan</a>
+              <div class="menu-wrap" id="menuWrap">
+                <button class="btn btn-ghost" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menuDrop">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                  MENU
+                </button>
+                <div class="menu-drop" id="menuDrop" role="menu">
+                  <a href="#kas" role="menuitem">Keadaan Kas</a>
+                  <a href="#buka-file" role="menuitem">Cara Buka File</a>
+                  <a href="#ketentuan" role="menuitem">Ketentuan</a>
+                  <a href="#dana" role="menuitem">Penggunaan Dana</a>
+                  <a href="#pengurus" role="menuitem">Struktur Pengurus</a>
+                </div>
+              </div>
             </div>
           </div>
           <img class="hero-img" src="assets/suasana-mulyasari.webp" alt="Ilustrasi suasana Kp. Mulyasari: rumah warga, masjid, dan sawah pada sore hari" width="1920" height="1280" />
@@ -375,11 +400,10 @@
     <nav class="toc" aria-label="Isi halaman">
       <div class="wrap">
         <a href="#kas">Keadaan Kas</a>
-        <a href="#hitung">Hitung Iuran</a>
+        <a href="#buka-file">Cara Buka File</a>
         <a href="#ketentuan">Ketentuan</a>
         <a href="#dana">Penggunaan Dana</a>
         <a href="#pengurus">Struktur Pengurus</a>
-        <a href="#buka-file">Cara Buka File</a>
       </div>
     </nav>
 
@@ -479,7 +503,7 @@
 
         <div class="callout">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.5"/></svg>
-          <p><strong>Tidak ada tunggakan.</strong> Warga yang tidak membayar pada bulan ini tidak menanggung tagihan dobel &mdash; bulan berikutnya tetap membayar Rp5.000 seperti biasa.</p>
+          <p><strong>Tidak ada tunggakan.</strong> Warga yang tidak MAMPU membayar pada bulan ini tidak menanggung tagihan dobel &mdash; bulan berikutnya tetap membayar Rp5.000 seperti biasa.</p>
         </div>
 
         <div class="legend" aria-label="Legenda warna pada file iuran">
@@ -624,6 +648,34 @@
 
     <script>
       (function () {
+        /* Menu dropdown di hero: tombol MENU katilu */
+        var menuWrap = document.getElementById("menuWrap");
+        var menuBtn = document.getElementById("menuBtn");
+        var menuDrop = document.getElementById("menuDrop");
+        function closeMenu() {
+          if (!menuWrap) return;
+          menuWrap.classList.remove("open");
+          if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+        }
+        if (menuBtn && menuWrap) {
+          menuBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var open = menuWrap.classList.toggle("open");
+            menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+          });
+          document.addEventListener("click", function (e) {
+            if (!menuWrap.contains(e.target)) closeMenu();
+          });
+          if (menuDrop) {
+            menuDrop.addEventListener("click", function (e) {
+              if (e.target.closest("a")) closeMenu();
+            });
+          }
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") closeMenu();
+          });
+        }
+
         var ADDRESS = "Kp. Mulyasari (Jalupang), RT 01 dan RT 02 / RW 05, Desa Pangulah Baru, Kecamatan Kotabaru, Kabupaten Karawang, Jawa Barat 41374";
         var SHEET_NOTE = "Sesuai Rekapan Bulanan, November 2026";
 
