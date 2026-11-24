@@ -149,7 +149,7 @@
       .toc a:hover, .toc a:focus-visible { background: var(--green-soft); color: var(--green); }
       .toc a.toc-top { color: var(--green); }
 
-      /* ---------- Tombol balik ka luhur ---------- */
+      /* ---------- Tombol kembali ke atas ---------- */
       .to-top {
         position: fixed; right: 16px; bottom: 16px; z-index: 60;
         width: 52px; height: 52px; border: 0; border-radius: 50%;
@@ -417,7 +417,7 @@
 
     <nav class="toc" aria-label="Isi halaman">
       <div class="wrap">
-        <a href="#atas" class="toc-top">&uarr; Luhur</a>
+        <a href="#atas" class="toc-top">&uarr; Atas</a>
         <a href="#kas">Keadaan Kas</a>
         <a href="#buka-file">Cara Buka File</a>
         <a href="#ketentuan">Ketentuan</a>
@@ -665,6 +665,7 @@
       </div>
     </footer>
 
+    <button class="to-top" id="toTop" type="button" aria-label="Kembali ke atas">&uarr;</button>
     <script>
       (function () {
         /* Menu dropdown di hero: tombol MENU katilu */
@@ -923,7 +924,7 @@
             }
           });
         }
-        /* Tombol balik ka luhur: muncul sanggeus scroll ka handap */
+        /* Tombol kembali ke atas: muncul setelah scroll ke bawah */
         var toTopBtn = document.getElementById("toTop");
         if (toTopBtn) {
           var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -939,6 +940,5 @@
         }
       })();
     </script>
-    <button class="to-top" id="toTop" type="button" aria-label="Balik ka luhur">&uarr;</button>
   </body>
 </html>
