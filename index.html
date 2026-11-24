@@ -419,12 +419,12 @@
         <div class="kas-grid">
           <div class="card">
             <p class="k-label">Saldo Kas Saat Ini &mdash; <span id="kasMonth">November 2026</span></p>
-            <p class="k-big" id="kasSaldo">Rp26.250</p>
+            <p class="k-big" id="kasSaldo">Rp0</p>
             <p class="k-sub">Menuju target dana cadangan sebesar <span id="kasTargetText">Rp3.000.000</span>:</p>
-            <div class="progress" id="kasProgress" role="img" aria-label="Saldo Rp26.250 dari target Rp3.000.000, tercapai 0,88 persen">
+            <div class="progress" id="kasProgress" role="img" aria-label="Saldo Rp0 dari target Rp3.000.000, tercapai 0%">
               <div id="progressFill"></div>
             </div>
-            <div class="progress-meta"><span id="kasCollected">Rp26.250 terkumpul</span><span id="kasPercent">0,88% dari target</span></div>
+            <div class="progress-meta"><span id="kasCollected">Rp0 terkumpul</span><span id="kasPercent">0% dari target</span></div>
           </div>
           <div class="card">
             <p class="k-label">Rincian Ketentuan Kas</p>
@@ -686,7 +686,7 @@
            file iuran lewat umpan data publik Google Sheets (gratis, tanpa
            kunci). Nilai awal di bawah adalah potret terakhir yang tercatat
            (November 2026) dan tetap ditampilkan bila file tidak terjangkau. */
-        var KAS = { saldo: 26250, target: 3000000, iuran: 5000, biaya: 0.25, santunan: 1000000, bulan: "November 2026" };
+        var KAS = { saldo: 0, target: 3000000, iuran: 5000, biaya: 0.25, santunan: 1000000, bulan: "November 2026" };
         var fill = document.getElementById("progressFill");
         function rpFull(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
         function pctText(x) { return x.toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "%"; }
@@ -719,11 +719,10 @@
         /* Riwayat saldo per bulan. Bulan yang sudah ada pembayaran
            (total iuran > 0) ATAU pengeluaran (> 0) bisa diketuk untuk
            membuka rinciannya. Bulan tanpa kegiatan tampil pudar, tidak
-           bisa diketuk, dan tidak menampilkan angka saldo. Data awal di
-           bawah adalah potret terakhir yang tercatat (November 2026) dan
+           bisa diketuk, dan tidak menampilkan angka saldo. Data awal kosong (belum ada pembayaran tercatat) dan
            diganti data terbaru dari Rekapan bila file terjangkau. */
         var BULAN_LIST = ["November 2026", "Desember 2026", "Januari 2027", "Februari 2027", "Maret 2027", "April 2027", "Mei 2027", "Juni 2027", "Juli 2027", "Agustus 2027", "September 2027", "Oktober 2027", "November 2027", "Desember 2027"];
-        var riwayatData = { "November 2026": { mayar: 4, total: 3020000, biaya: 755000, keluar: 0, saldo: 2265000 } };
+        var riwayatData = {};
         var riwayatList = document.getElementById("riwayatList");
         function renderRiwayat() {
           if (!riwayatList) return;
